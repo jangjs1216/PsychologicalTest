@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -20,14 +21,17 @@ public class TestActivity extends AppCompatActivity {
     TextView tv_Question;
     Button btn_Ans1, btn_Ans2;
 
+    private final long FINISH_INTERVAL_TIME = 2000;
+    private long backPressedTime = 0;
+
     private int curCount = 0;
     private int Icount, Ncount, Fcount, Pcount, DangerCount;
     // INFP <-> ESTJ 요소를 카운트합니다.
 
     String[] I_data = {"게임이 시작됐다. 어디로 갈까?/사람들이 몰려있는 곳으로 간다/혼자서 임무를 하러 간다.",
             "토론이 시작됐다. 무슨 말을 먼저 하지?/신고자에게 물어본다/일단 신고자의 말을 듣는다.",
-            "원자로 임무 중인데 2명이 들어왔다. 이때 당신의 행동은?/들어온 사람의 색깔을 기억한다./당장 임무에 집중한다.",
-            "범인으로 의심되는 승무원이 있을 때 할 일은?/일단 사람들을 선동한다/그 사람의 동선에 집중한다.",
+            "원자로 임무 중인데 2명이 들어왔다. 이때 당신의 행동은?/들어온 사람의 색깔을 기억한다./하던 임무에 집중한다.",
+            "범인으로 의심되는 승무원이 있을 때 할 일은?/일단 사람들을 모아 선동한다/그 사람의 동선에 집중한다.",
             "임무 중 쉬는 시간에는 무엇을 할까?/동료와 이야기한다./컴퓨터 게임을 한다."};
     String[] N_data = {"임포스터일 때 승무원과 마주쳤다. 언제 죽여야 할까?/왠지 주위에 아무도 없을 것 같을 때 죽인다./승무원의 동선을 제한한 후 살해한다.",
     "토론에서 용의자가 말을 더듬고 있다. 어떻게 해야 할까?/범인이라고 몰아간다/당황하고 있다고 속으로만 생각한다.",
@@ -38,12 +42,13 @@ public class TestActivity extends AppCompatActivity {
     "당신은 임포스터다. 토론 도중 당신에게 어디 있었는지 말하라고 한다. 어떻게 대답할까?/일단 그럴듯하게 거짓말 한다./사실대로 말하되 중요한 건 말하지 않는다.",
     "승무원이 수상하다. 토론때 당신은.../일단 가만히 있는다/의심이 간다고 선동한다.",
     "우주복을 꾸밀 시간이다. 당신은 무슨 색 우주복을 입을 것인가?/우주선과 비슷한 색깔/화려하게 꾸민다.",
-    "방금 임포스터가 혀로 동료를 찔렀다! 당신은.../신고한다/도망친다"};
+    "방금 임포스터가 혀로 동료를 찔렀다! 당신은.../" +
+            "신고한다/도망친다"};
     String[] P_data = {"모자를 고를 때 당신은.../옷과 동일한 색깔로 깔맞춤한다./아무거나 집는다.",
-    "회의에서 내 말을 안들을 때는 어떻게 해야할까?/소리를 지르며 화를 낸다./일단 지금의 대화에 집중한다.",
+    "게임이 시작됐다. 어떻게 임무를 수행할 것인가?/주어진 임무를 어떤 순서로 할지 생각한다./눈에 들어오는 임무를 먼저 시작한다.",
     "청소 업무와 소행성 업무 중 당신이 하고싶은 임무는?/청소/소행성",
     "카드키가 잘 안긁힐 때 어떻게 해야할까?/일단 계속 시도해본다/다른 임무를 먼저 한다.",
-    "용의자가 투표를 스킵 하자고 한다. 투표를 어디에 할까?/용의자에게 투표한다./스킵한다."
+    "당신은 임포스터다. 어떻게 행동할 것인가?/어떻게 죽일지 계획을 세운다./아무나 따라가서 기회를 노린다."
     };
     String[] Danger_data = {"어두운 곳이 밝은 곳 보다 마음이 편하다/그렇다/아니다",
             "임포스터가 에어컨을 고장냈다. 더울 때는 옷을 어떻게 입어야 할까?/팔을 보여주기 싫어서 긴팔을 입는다/더우니까 반팔을 입는다.",
@@ -82,17 +87,6 @@ public class TestActivity extends AppCompatActivity {
                 curCount++;
                 GoNextQuestion();
 
-                if(curCount <= 2)
-                    Icount++;
-                else if(4 <= curCount && curCount <= 6)
-                    Ncount++;
-                else if(8 <= curCount && curCount <= 10)
-                    Fcount++;
-                else if(12 <= curCount && curCount <= 14)
-                    Pcount++;
-                else
-                    DangerCount++;
-
                 if(curCount == 15) {
                     GoNextIntent();
                 }
@@ -105,6 +99,17 @@ public class TestActivity extends AppCompatActivity {
                 // I[0 1 2] D[3] N[4 5 6] D[7] F[8 9 10] D[11] P[12 13 14]
                 curCount++;
                 GoNextQuestion();
+
+                if(curCount <= 2)
+                    Icount++;
+                else if(4 <= curCount && curCount <= 6)
+                    Ncount++;
+                else if(8 <= curCount && curCount <= 10)
+                    Fcount++;
+                else if(12 <= curCount && curCount <= 14)
+                    Pcount++;
+                else
+                    DangerCount++;
 
                 if(curCount == 15) {
                     GoNextIntent();
@@ -171,5 +176,18 @@ public class TestActivity extends AppCompatActivity {
         it.putExtra("result",result);
         it.putExtra("isDanger",DangerCount>=2);
         startActivity(it);
+    }
+
+    @Override
+    public void onBackPressed() {
+        long tempTime = System.currentTimeMillis();
+        long intervalTime = tempTime - backPressedTime;
+
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+            super.onBackPressed();
+        } else {
+            backPressedTime = tempTime;
+            Toast.makeText(this, "뒤로 버튼 한번 더 누르면 돌아갑니다.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

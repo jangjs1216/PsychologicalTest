@@ -20,6 +20,7 @@
         android:fontFamily="@font/gasansmedium"/>
 
     <ImageView
+        android:id="@+id/iv_character"
         android:layout_gravity="center"
         android:layout_width="200dp"
         android:layout_height="200dp"
@@ -34,6 +35,7 @@
         android:gravity="center"
         android:text="당신은 엘리트 승무원 입니다!"
         android:textSize="25dp"
+        android:textColor="@color/white"
         android:fontFamily="@font/gasansmedium"/>
 
     <Button
