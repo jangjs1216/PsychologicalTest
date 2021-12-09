@@ -2,7 +2,9 @@ package com.example.psychologicaltest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -13,13 +15,29 @@ public class ResultActivity extends AppCompatActivity {
     TextView tv_result;
     ImageView iv_character;
 
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
+        // 1. Shared Preference 초기화
+        pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        editor = pref.edit();
+
         tv_result = findViewById(R.id.tv_result);
         iv_character = findViewById(R.id.iv_character);
+
+        editor.putBoolean("isSaved", false);
+        editor.putInt("savedCount", 0);
+        editor.putInt("savedI", 0);
+        editor.putInt("savedN", 0);
+        editor.putInt("savedF", 0);
+        editor.putInt("savedP", 0);
+        editor.putInt("savedDanger", 0);
+        editor.apply(); // 저장
 
         String[] nameData = {
                 "ENFJ/정의로운 승무원",

@@ -16,6 +16,7 @@
         android:layout_marginTop="500dp"
         android:text="시작하기"
         android:fontFamily="@font/gasansmedium"
+        android:background="@drawable/button"
         android:textSize="18dp"/>
 
 </LinearLayout>

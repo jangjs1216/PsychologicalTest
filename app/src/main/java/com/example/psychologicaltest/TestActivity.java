@@ -2,15 +2,21 @@ package com.example.psychologicaltest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -18,11 +24,20 @@ import java.util.Random;
 import javax.xml.transform.Result;
 
 public class TestActivity extends AppCompatActivity {
-    TextView tv_Question;
+    Typewriter tv_Question;
+    TextView tv_progress;
     Button btn_Ans1, btn_Ans2;
+    ProgressBar progressBar;
+
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
+
+    MediaPlayer mediaPlayer;
 
     private final long FINISH_INTERVAL_TIME = 2000;
     private long backPressedTime = 0;
+
+    int savedCount, savedI, savedN, savedF, savedP, savedDanger;
 
     private int curCount = 0;
     private int Icount, Ncount, Fcount, Pcount, DangerCount;
@@ -40,7 +55,7 @@ public class TestActivity extends AppCompatActivity {
     "동료의 시체가 의료실에서 발견됐다! 어떻게 할까?/즉시 신고한다/주변에 누가 있는지 확인 후 신고한다"};
     String[] F_data = {"승무원이 의심을 받고 있다. 당신은 무슨 말을 할까?/딱 봐도 저놈이네./잠시만, 일단 얘기를 들어보자.",
     "당신은 임포스터다. 토론 도중 당신에게 어디 있었는지 말하라고 한다. 어떻게 대답할까?/일단 그럴듯하게 거짓말 한다./사실대로 말하되 중요한 건 말하지 않는다.",
-    "승무원이 수상하다. 토론때 당신은.../일단 가만히 있는다/의심이 간다고 선동한다.",
+    "승무원이 수상하다. 토론때 당신은.../의심이 간다고 선동한다./일단 가만히 있는다.",
     "우주복을 꾸밀 시간이다. 당신은 무슨 색 우주복을 입을 것인가?/우주선과 비슷한 색깔/화려하게 꾸민다.",
     "방금 임포스터가 혀로 동료를 찔렀다! 당신은.../" +
             "신고한다/도망친다"};
@@ -70,15 +85,50 @@ public class TestActivity extends AppCompatActivity {
         tv_Question = findViewById(R.id.tv_Question);
         btn_Ans1 = findViewById(R.id.btn_Ans1);
         btn_Ans2 = findViewById(R.id.btn_Ans2);
+        tv_progress = findViewById(R.id.tv_progress);
+        progressBar = findViewById(R.id.progressBar);
 
         Icount = Ncount = Fcount = Pcount = DangerCount = 0;
 
-        Random ran = new Random();
-        int idx = ran.nextInt(I_data.length);
-        String[] curData = I_list.remove(idx).split("/");
-        tv_Question.setText(curData[0]);
-        btn_Ans1.setText(curData[1]);
-        btn_Ans2.setText(curData[2]);
+        // 1. Shared Preference 초기화
+        pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        editor = pref.edit();
+
+        Intent intent = getIntent();
+        savedCount = intent.getExtras().getInt("savedCount");
+        savedI = intent.getExtras().getInt("savedI");
+        savedN = intent.getExtras().getInt("savedN");
+        savedF = intent.getExtras().getInt("savedF");
+        savedP = intent.getExtras().getInt("savedP");
+        savedDanger = intent.getExtras().getInt("savedDanger");
+        Boolean isDanger = intent.getExtras().getBoolean("isDanger");
+
+        Log.e("###","curCount = "+savedCount);
+        if(savedCount > 0)
+        {
+            //저장 된 정보가 있는 경우
+            curCount = savedCount;
+            Icount = savedI;
+            Ncount = savedN;
+            Fcount = savedF;
+            Pcount = savedP;
+            DangerCount = savedDanger;
+            GoNextQuestion();
+        }else {
+            Random ran = new Random();
+            int idx = ran.nextInt(I_data.length);
+            String[] curData = I_list.remove(idx).split("/");
+            tv_Question.setText("");
+            tv_Question.setCharacterDelay(60);
+            tv_Question.animateText(curData[0]);
+            btn_Ans1.setText(curData[1]);
+            btn_Ans2.setText(curData[2]);
+        }
+        mediaPlayer = MediaPlayer.create(this, R.raw.outlong);
+        mediaPlayer.start();
+        tv_progress.setText(curCount+"/15");
+        double perCent = (double)curCount/15*100.0;
+        progressBar.setProgress((int)perCent);
 
         btn_Ans1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +136,7 @@ public class TestActivity extends AppCompatActivity {
                 // I[0 1 2] D[3] N[4 5 6] D[7] F[8 9 10] D[11] P[12 13 14]
                 curCount++;
                 GoNextQuestion();
+                SavePreferenceData();
 
                 if(curCount == 15) {
                     GoNextIntent();
@@ -143,9 +194,22 @@ public class TestActivity extends AppCompatActivity {
             int idx = ran.nextInt(Danger_list.size());
             curData = Danger_list.remove(idx).split("/");
         }
-        tv_Question.setText(curData[0]);
+
+        Handler handler = new Handler();
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.outlong);
+        mediaPlayer.start();
+
+        tv_Question.setText("");
+        tv_Question.setCharacterDelay(60);
+        tv_Question.animateText(curData[0]);
+
+        //tv_Question.setText(curData[0]);
         btn_Ans1.setText(curData[1]);
         btn_Ans2.setText(curData[2]);
+        tv_progress.setText(curCount+"/15");
+        double perCent = (double)curCount/15*100.0;
+        progressBar.setProgress((int)perCent);
     }
 
     private void GoNextIntent()
@@ -176,6 +240,18 @@ public class TestActivity extends AppCompatActivity {
         it.putExtra("result",result);
         it.putExtra("isDanger",DangerCount>=2);
         startActivity(it);
+    }
+
+    private void SavePreferenceData()
+    {
+        editor.putBoolean("isSaved", true);
+        editor.putInt("savedCount", curCount);
+        editor.putInt("savedI", Icount);
+        editor.putInt("savedN", Ncount);
+        editor.putInt("savedF", Fcount);
+        editor.putInt("savedP", Pcount);
+        editor.putInt("savedDanger", DangerCount);
+        editor.apply(); // 저장
     }
 
     @Override
