@@ -5,15 +5,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ResultActivity extends AppCompatActivity {
 
+    Button btn_share1, btn_share2;
+
     TextView tv_result;
     ImageView iv_character;
+
+    MediaPlayer mp;
 
     SharedPreferences pref;
     SharedPreferences.Editor editor;
@@ -29,6 +37,9 @@ public class ResultActivity extends AppCompatActivity {
 
         tv_result = findViewById(R.id.tv_result);
         iv_character = findViewById(R.id.iv_character);
+
+        btn_share1 = findViewById(R.id.btn_share1);
+        btn_share2 = findViewById(R.id.btn_share2);
 
         editor.putBoolean("isSaved", false);
         editor.putInt("savedCount", 0);
@@ -71,6 +82,15 @@ public class ResultActivity extends AppCompatActivity {
                 Log.e("###", "결과값 = " + splitData[1]);
                 tv_result.setText("당신은 "+splitData[1]+" 입니다!");
             }
+        }
+
+        if(result.equals("ENTP") || result.equals("ESTJ") || result.equals("ESTP"))
+        {
+            mp = MediaPlayer.create(this, R.raw.impowin);
+            mp.start();
+        }else{
+            mp = MediaPlayer.create(this, R.raw.crewwin);
+            mp.start();
         }
 
         switch(result)
@@ -123,8 +143,20 @@ public class ResultActivity extends AppCompatActivity {
             case "ISTP":
                 iv_character.setImageResource(R.drawable.istp);
                 break;
-
-
         }
+
+        btn_share1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "카카오톡 공유 링크가 복사되었습니다.", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        btn_share2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "페이스북 공유 링크가 복사되었습니다.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

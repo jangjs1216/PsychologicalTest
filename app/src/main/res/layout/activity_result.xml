@@ -11,13 +11,14 @@
     <TextView
         android:id="@+id/tv_Question"
         android:layout_width="350dp"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="60dp"
         android:text="결과가 나왔습니다!"
         android:textSize="25dp"
-        android:fontFamily="@font/gasansmedium"/>
+        android:textColor="@color/white"
+        android:fontFamily="@font/gasansmedium" />
 
     <ImageView
         android:id="@+id/iv_character"
@@ -25,27 +26,30 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:src="@drawable/char1"
-        android:background="@android:color/transparent"/>
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="30dp"/>
 
     <TextView
         android:id="@+id/tv_result"
         android:layout_width="350dp"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:gravity="center"
         android:text="당신은 엘리트 승무원 입니다!"
         android:textSize="25dp"
         android:textColor="@color/white"
-        android:fontFamily="@font/gasansmedium"/>
+        android:fontFamily="@font/gasansmedium"
+        android:layout_marginBottom="30dp"/>
 
     <Button
         android:id="@+id/btn_share1"
         android:layout_gravity="center"
         android:layout_width="350dp"
         android:layout_height="60dp"
-        android:text="페이스북 공유"
+        android:text="카카오톡 공유"
         android:fontFamily="@font/gasansmedium"
-        android:background="#001D87"
+        android:background="@drawable/kakaobutton"
+        android:textColor="#000000"
         android:textSize="18dp"/>
 
     <Button
@@ -53,9 +57,10 @@
         android:layout_gravity="center"
         android:layout_width="350dp"
         android:layout_height="60dp"
-        android:text="카카오톡 공유"
+        android:text="페이스북 공유"
+        android:textColor="#ffffff"
         android:fontFamily="@font/gasansmedium"
-        android:background="#FFE500"
+        android:background="@drawable/facebookbutton"
         android:layout_marginTop="30dp"
         android:textSize="18dp"/>
 

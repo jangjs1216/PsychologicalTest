@@ -7,7 +7,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -18,10 +20,16 @@ public class MainActivity extends AppCompatActivity {
 
     Button btn_start;
 
+    MediaPlayer mediaPlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 시작 사운드 삽입
+        mediaPlayer = MediaPlayer.create(this, R.raw.start);
+        mediaPlayer.start();
 
         // 1. Shared Preference 초기화
         pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);

@@ -32,7 +32,7 @@ public class TestActivity extends AppCompatActivity {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
 
-    MediaPlayer mediaPlayer;
+    MediaPlayer mediaPlayer, startPlayer;
 
     private final long FINISH_INTERVAL_TIME = 2000;
     private long backPressedTime = 0;
@@ -90,6 +90,10 @@ public class TestActivity extends AppCompatActivity {
 
         Icount = Ncount = Fcount = Pcount = DangerCount = 0;
 
+        // 시작
+        startPlayer = MediaPlayer.create(this, R.raw.main);
+        startPlayer.start();
+
         // 1. Shared Preference 초기화
         pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
         editor = pref.edit();
@@ -139,6 +143,8 @@ public class TestActivity extends AppCompatActivity {
                 SavePreferenceData();
 
                 if(curCount == 15) {
+                    startPlayer.stop();
+                    startPlayer.release();
                     GoNextIntent();
                 }
             }
@@ -163,6 +169,8 @@ public class TestActivity extends AppCompatActivity {
                     DangerCount++;
 
                 if(curCount == 15) {
+                    startPlayer.stop();
+                    startPlayer.release();
                     GoNextIntent();
                 }
             }
